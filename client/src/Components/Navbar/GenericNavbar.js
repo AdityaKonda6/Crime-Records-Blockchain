@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { Link } from 'react-router-dom';
 
 class GenericNavbar extends Component{
     render() 
@@ -6,16 +7,15 @@ class GenericNavbar extends Component{
         return(
             <nav className="nav-wrapper grey darken-4 navbar">
             <div className="container">
-            <b><a href="/" className="brand-logo">Thadam</a></b>
-               <ul className = "right">
-                   <li><a href = "/police">Home</a></li>
-                   <li><a href = "/">Log out</a></li>
-               </ul>
+                <b><Link to="/" className="brand-logo">Crime Records Management </Link></b>
+                <ul className = "right">
+                    <li><Link to="/police">Home</Link></li>
+                    <li><Link to="/">Log out</Link></li>
+                </ul>
             </div>
         </nav>
         )
     }
-
 }
 
 export default GenericNavbar;

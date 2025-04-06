@@ -51,9 +51,31 @@ class NewFIR extends Component
     
     onSubmit(event) {
         const { accounts, contract } = this.state;
-        event.preventDefault()
+        event.preventDefault();
         this.onGetDate();
-        contract.methods.addCrimeReport(this.state.crime_id, this.state.timestamp, this.state.offense_code, this.state.description).send({from: accounts[0]});
+        
+        this.setState({ loading: true });
+        
+        contract.methods.addCrimeReport(
+            this.state.crime_id, 
+            this.state.timestamp, 
+            this.state.offense_code, 
+            this.state.description
+        ).send({from: accounts[0]})
+        .then(() => {
+            // Using window.alert instead of M.toast
+            alert('FIR Successfully Submitted!');
+            setTimeout(() => {
+                this.props.history.push('/police');
+            }, 2000);
+        })
+        .catch(error => {
+            alert('Error submitting FIR');
+            console.error(error);
+        })
+        .finally(() => {
+            this.setState({ loading: false });
+        });
     }
 
     onGetDate() {
@@ -85,15 +107,15 @@ class NewFIR extends Component
                             <div className="card-content">
                                 <form onSubmit={this.onSubmit}>
                                     <div className="input-field">
-                                        <input type="text" id="caseId" onChange={(evt) => { this.state.crime_id =  evt.target.value; }} required/>
+                                        <input type="text" id="caseId" onChange={(evt) => { this.setState({ crime_id: evt.target.value }); }} required/>
                                         <label htmlFor="email">Case ID</label>
                                     </div>
                                     <div className="input-field">
-                                        <input value={this.state.timestamp} type="text" id="timestamp" readOnly onChange={(evt) => { this.state.timestamp =  evt.target.value; }} required/>
+                                        <input value={this.state.timestamp} type="text" id="timestamp" readOnly onChange={(evt) => { this.setState({ timestamp: evt.target.value }); }} required/>
                                         {/* <label htmlFor="email">Time Stamp</label> */}
                                     </div>
                                     <div className="input-field">
-                                        <input type="text" id="offCode" onChange={(evt) => { this.state.offense_code =  evt.target.value; }} required/>
+                                        <input type="text" id="offCode" onChange={(evt) => { this.setState({ offense_code: evt.target.value }); }} required/>
                                         <label htmlFor="offCode">Offense Code</label>
                                     </div>
 
@@ -112,7 +134,7 @@ class NewFIR extends Component
                             </div>
                             <div className="card-content">
                                 <div className="input-field ">
-                                    <textarea id = "report"  className = "textAreaHeight" onChange={(evt) => { this.state.description =  evt.target.value; }} required></textarea>
+                                    <textarea id="report" className="textAreaHeight" onChange={(evt) => { this.setState({ description: evt.target.value }); }} required></textarea>
                                 </div>
                             </div>
                         </div>

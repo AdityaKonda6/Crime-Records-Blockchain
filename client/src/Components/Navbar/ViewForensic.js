@@ -1,25 +1,22 @@
 import React from 'react';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
-const ViewForensic = (props) => 
-{
-    var {crimeId} = props;
-    var url = "/";
+const ViewForensic = (props) => {
+    const crimeId = props.crimeId;
+    
     return (
-       
         <nav className="nav-wrapper grey darken-4 navbar">
             <div className="container">
-                <b><a href="/" className="brand-logo">Thadam</a></b>
-                <ul className = "right">
-                <li><a href="/forensichome">Home</a></li>
-                <li> <a href={url}> Logout </a></li>
+                <b><Link to="/" className="brand-logo">Crime Records Management </Link></b>
+                <ul className="right">
+                    <li><Link to={`/viewcase/${crimeId}`}>FIR Details</Link></li>
+                    <li><Link to={`/crimedata/forensics/${crimeId}`}>Forensic Reports</Link></li>
+                    <li><Link to={`/other-reports/${crimeId}`}>Other Reports</Link></li>
+                    <li><Link to={`/crime-scene-photos/${crimeId}`}>Crime Scene Photographs</Link></li>
                 </ul>
-                </div> 
+            </div> 
         </nav>
-        
-    )
-    
+    );
 }
-
 
 export default ViewForensic;

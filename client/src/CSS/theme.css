@@ -1,0 +1,159 @@
+:root {
+  --primary-color: #1a237e;
+  --secondary-color: #0d47a1;
+  --accent-color: #2962ff;
+  --background-color: #f5f5f5;
+  --card-color: #ffffff;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+}
+
+body {
+  background-color: var(--background-color);
+  font-family: 'Roboto', sans-serif;
+}
+
+.navbar {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color)) !important;
+}
+
+.brand-logo {
+  font-weight: 700 !important;
+  letter-spacing: 1px;
+}
+
+.card {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.btn {
+  border-radius: 25px;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 0 2rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.title-styled {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-align: center;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.title-styled:after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 3px;
+  background: var(--accent-color);
+  margin: 10px auto;
+}
+
+.evidence-upload {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.evidence-upload:hover {
+  border-color: var(--accent-color);
+  background-color: rgba(41, 98, 255, 0.05);
+}
+
+.evidence-preview {
+  max-width: 300px;
+  margin: 1rem auto;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid var(--accent-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Login styles */
+.login-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+}
+
+.login-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-header h3 {
+    color: #1a237e;
+    margin-bottom: 0.5rem;
+}
+
+.login-header p {
+    color: #666;
+}
+
+/* Case Details styles */
+.case-details-card {
+    margin-top: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.description-text {
+    background: #f5f5f5;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
+/* Loading spinner */
+.preloader-wrapper {
+    margin: 2rem auto;
+}
+
+/* Toast messages */
+.toast {
+    border-radius: 4px;
+    font-weight: 500;
+}

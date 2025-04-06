@@ -1,137 +1,100 @@
 import React, { Component } from 'react';
-import ViewCase from './ViewCase';
-import {Link} from 'react-router';
-import SimpleStorageContract from "../contracts/SimpleStorage.json";
+import { Link } from 'react-router-dom';
+import Web3 from 'web3';
+import SimpleStorageContract from "../contracts/SimpleStorage.json";  // Fixed import
 import getWeb3 from "../utils/getWeb3";
 
-import '../CSS/policeList.css';
-
-class CaseList extends Component{
-
+class CaseList extends Component {
     state = {
-        details : [],
-        getDetailsOf: null
-    }
-
-    componentDidMount () {
-        
+        details: [],
+        web3: null,
+        contract: null,
+        loading: true,
+        error: null
     }
 
     componentDidMount = async () => {
         try {
-          // Get network provider and web3 instance.
-          const web3 = await getWeb3(); 
+            if (window.ethereum) {
+                const web3 = new Web3(window.ethereum);
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                const networkId = await web3.eth.net.getId();
+                const deployedNetwork = SimpleStorageContract.networks[networkId];  // Updated reference
+                
+                if (!deployedNetwork) {
+                    throw new Error('Contract not deployed to detected network');
+                }
 
-          // Use web3 to get the user's accounts.
-          const accounts = await web3.eth.getAccounts();
+                const instance = new web3.eth.Contract(
+                    SimpleStorageContract.abi,  // Updated reference
+                    deployedNetwork.address
+                );
 
-          // Get the contract instance.
-          const networkId = await web3.eth.net.getId();
-          const deployedNetwork = SimpleStorageContract.networks[networkId];
-          const instance = new web3.eth.Contract(
-            SimpleStorageContract.abi,
-            deployedNetwork && deployedNetwork.address,
-          );          
-          // Set web3, accounts, and contract to the state, and then proceed with an
-          // example of interacting with the contract's methods.
-          this.setState({ web3, accounts, contract: instance }, this.runExample);     
-          this.getVal();         
+                this.setState({ web3, contract: instance });
+                
+                // Get crime count first
+                const crimeCount = await instance.methods.getCrimeCount().call();
+                const crimes = [];
 
+                // Fetch each crime detail
+                for (let i = 0; i < crimeCount; i++) {
+                    const crime = await instance.methods.getCrimeBlock(i).call();
+                    crimes.push({
+                        id: crime[0],
+                        offenseCode: crime[1],
+                        description: crime[2],
+                        timestamp: crime[3]
+                    });
+                }
 
-        //   // bootstrap links
-        // const script1 = document.createElement("script");
-        // const script2 = document.createElement("script");
-        // const script3 = document.createElement("script");
-
-        // const link = document.createElement("link");
-
-        // script1.src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js";
-        // script2.src = "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js";
-        // script3.src = "https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js";
-        // link.src = "https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";
-        
-        // script1.async = true;
-        // script2.async = true;
-        // script3.async = true;
-        // link.async = true;
-    
-        // document.body.appendChild(script1);
-        // document.body.appendChild(script2);
-        // document.body.appendChild(script3);
-        // document.body.appendChild(link);
-
+                this.setState({ details: crimes, loading: false });
+            } else {
+                throw new Error('Please install MetaMask!');
+            }
         } catch (error) {
-          // Catch any errors for any of the above operations.
-          alert(
-            `Failed to load web3, accounts, or contract. Check console for details.`,
-          );
-          console.error(error);
+            console.error("Error:", error);
+            alert("Failed to load Web3, accounts, or contract.");
         }
-      };
-
-      getVal= async () =>{
-        const { accounts, contract } = this.state;  
-                var response2 = await contract.methods.getAllCrimeDetails().call(); 
-                this.setState({
-                    details: response2
-                }); 
-                console.log(this.state.details);             
-      };
+    };
 
     render() {
-        var arr = [];
-        var details = this.state.details;
-        for (var key in details) {
-            arr.push(details[key]);
+        if (this.state.loading) {
+            return <div className="center">Loading...</div>;
         }
 
-        const crimes = arr.length ?
-        (
-            arr.map(arr => 
-            {
-                var toLink = "forensicUpdate/" + arr.crime_id;
-            return (
-                <Link to = {toLink}>
+        if (this.state.error) {
+            return <div className="center red-text">{this.state.error}</div>;
+        }
 
-                <div className = "card" key = {arr.crime_id}>
-                <div className="row listItem" >
-                        <div className="col s3 black-text">
-                            <h6>{arr.crime_id}</h6>
-                        </div>
-                        <div className="col s3 black-text ">
-                            <h6>{arr.offense_code}</h6>
-                        </div>
-                        <div className="col s3 black-text ">
-                            <h6>{arr.description}</h6>
-                        </div>
-                        <div className="col s3 black-text ">
-                            <h6>{arr.timestamp}</h6>
-                        </div>
+        const crimeList = this.state.details.map(crime => (
+            <div className="card blue-grey lighten-5" key={crime.id}>
+                <div className="row">
+                    <div className="col s3">
+                        <p>{crime.id}</p>
+                    </div>
+                    <div className="col s3">
+                        <p>{crime.offenseCode}</p>
+                    </div>
+                    <div className="col s3">
+                        <p>{crime.description}</p>
+                    </div>
+                    <div className="col s3">
+                        <p>{crime.timestamp}</p>
                     </div>
                 </div>
-                </Link>
-                )
-            })
-        ):
-        (       
-                <div className="error">
-                    <h3>No crimes!</h3>
+                <div className="card-action">
+                    <Link to={'/viewcase/' + crime.id}>View Case</Link>
                 </div>
-        )
+            </div>
+        ));
 
-         return(
-            <div className="notes">
-                {crimes}
-             </div>
-         )
+        return (
+            <div className="crime-list">
+                {crimeList.length > 0 ? crimeList : <p className="center">No cases found</p>}
+            </div>
+        );
     }
-    clicked = (clicked) =>
-    {
-        this.setState({
-            getDetailsOf : clicked
-        })
-
-    }   
 }
 
 export default CaseList;

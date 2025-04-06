@@ -117,7 +117,8 @@ class ViewForensic extends Component
       }
     render()
     {
-        var crimeId = this.props.routeParams.caseId;
+        // Update to use match.params instead of routeParams
+        var crimeId = this.props.match.params.caseId;
         console.log(this.props);
         return(
             <div>
@@ -128,8 +129,8 @@ class ViewForensic extends Component
                 <div className="row">
                     <div className="col-sm-4">
                         <div className="form-group required">
-                            <label for="report_type">CASE ID</label>
-                            <input className="form-control" readOnly value = {crimeId} type="text" id="case_id" name="case_id" placeholder="Enter product id" onChange={(evt) => { this.state.prod_id =  evt.target.value; }} required />
+                            <label htmlFor="report_type">CASE ID</label>
+                            <input className="form-control" readOnly value={crimeId} type="text" id="case_id" name="case_id" placeholder="Enter product id" onChange={(evt) => { this.setState({ case_id: evt.target.value }); }} required />
                         </div>
                     </div>
                 </div>
@@ -137,8 +138,8 @@ class ViewForensic extends Component
                 <div className="row">
                     <div className="col-sm-8">
                         <div className="form-group required">
-                            <label for="company">EXHIBIT NAME - CODE</label> 
-                            <input className="form-control" type="text" id="exhibit_name" name="exhibit_name" placeholder="Type and code of uploaded exhibit." onChange={(evt) => { this.state.prod_status =  evt.target.value; }} required />
+                            <label htmlFor="company">EXHIBIT NAME - CODE</label> 
+                            <input className="form-control" type="text" id="exhibit_name" name="exhibit_name" placeholder="Type and code of uploaded exhibit." onChange={(evt) => { this.setState({ exhibit_name: evt.target.value }); }} required />
                         </div>
                     </div>                    
                 </div>
@@ -146,15 +147,15 @@ class ViewForensic extends Component
                 <div className="row">
                     <div className="col-sm-8">
                         <div className="form-group required">
-                            <label for="par_rem">DESCRIPTION</label>
-                            <input className="form-control" type="text" id="desc" name="desc" placeholder="One line description" onChange={(evt) => { this.state.authority =  evt.target.value; }} required />                                    
+                            <label htmlFor="par_rem">DESCRIPTION</label>
+                            <input className="form-control" type="text" id="desc" name="desc" placeholder="One line description" onChange={(evt) => { this.setState({ desc: evt.target.value }); }} required />                                    
                         </div>
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-sm-8">
                         <div className="form-group required">
-                            <label for="payment">Documents (upload in .zip or .rar format)</label>
+                            <label htmlFor="payment">Documents (upload in .zip or .rar format)</label>
                             <input className="form-control" type="file" accept="application/zip,application/x-zip,application/x-zip-compressed,application/octet-stream" onChange={this.captureFile}/>
                          </div>
                     </div>   
@@ -163,8 +164,8 @@ class ViewForensic extends Component
                 <div className="row">
                     <div className="col-sm-4">
                         <div className="form-group required">
-                            <label for="fee">TIMESTAMP</label>
-                            <input value={this.state.timestamp} className="form-control" readOnly type="text" id="timestamp" name="timestamp" onChange={(evt) => { this.state.timestamp =  evt.target.value; }} placeholder="2019-08-03 20:45" required />
+                            <label htmlFor="fee">TIMESTAMP</label>
+                            <input value={this.state.timestamp} className="form-control" readOnly type="text" id="timestamp" name="timestamp" onChange={(evt) => { this.setState({ timestamp: evt.target.value }); }} placeholder="2019-08-03 20:45" required />
                         </div>
                     </div>                                                              
                     <div className="form-submit">
